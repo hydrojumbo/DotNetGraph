@@ -8,6 +8,8 @@ using DotNetGraph.Edge;
 using DotNetGraph.Extensions;
 using DotNetGraph.Node;
 using DotNetGraph.SubGraph;
+using System.Linq;
+using System;
 
 namespace DotNetGraph.Compiler
 {
@@ -38,6 +40,8 @@ namespace DotNetGraph.Compiler
 
             builder.Append($"{_graph.Identifier} {{ ");
 
+            CompileNodeRanks(builder, _graph.Elements.Where(f => f is DotNode).Select(f => f as DotNode).ToArray());
+
             foreach (var element in _graph.Elements)
             {
                 if (element is DotEdge edge)
@@ -66,6 +70,8 @@ namespace DotNetGraph.Compiler
             builder.Append($"subgraph {subGraph.Identifier} {{ ");
             
             CompileSubGraphAttributes(builder, subGraph.Attributes);
+
+            CompileNodeRanks(builder, subGraph.Elements.Where(f => f is DotNode).Select(f => f as DotNode).ToArray());
             
             foreach (var element in subGraph.Elements)
             {
@@ -88,6 +94,31 @@ namespace DotNetGraph.Compiler
             }
             
             builder.Append("} ");
+        }
+
+        private void CompileNodeRanks(StringBuilder builder, DotNode[] nodes)
+        {
+            if (nodes.Length == 0)
+                return;
+
+            foreach (IGrouping<DotNodeRank, DotNode> rank in nodes
+                //.SelectMany(f => f.Attributes.Where(attr => attr is DotNodeRankAttribute))
+                .Where(f => f.Attributes.Any(ff => ff is DotNodeRankAttribute))                
+                .GroupBy(f => (f.Attributes.First(ff => ff is DotNodeRankAttribute) as DotNodeRankAttribute).Rank))
+            {
+                switch (rank.Key)
+                {
+                    case DotNodeRank.Max:
+                    case DotNodeRank.Min:
+                        builder.Append($"{{ rank={rank.Key.ToString().ToLower()}; {string.Join("; ", rank.Select(r => r.Identifier))} }}");
+                        break;
+
+                    default:
+                        builder.Append($"{{ rank=same; {string.Join("; ", rank.Select(r => r.Identifier))} }}");
+                        break;                    
+                }
+            }
+
         }
 
         private void CompileSubGraphAttributes(StringBuilder builder, ReadOnlyCollection<IDotAttribute> attributes)
@@ -210,6 +241,10 @@ namespace DotNetGraph.Compiler
                 else if (attribute is DotEdgeArrowHeadAttribute edgeArrowHeadAttribute)
                 {
                     attributeValues.Add($"arrowhead={edgeArrowHeadAttribute.ArrowType.ToString().ToLowerInvariant()}");
+                }
+                else if (attribute is DotNodeRankAttribute nodeRankAttribute)
+                {
+                    // no-op: this will be handled at the graph level
                 }
                 else
                 {

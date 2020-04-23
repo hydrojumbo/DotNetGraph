@@ -54,6 +54,12 @@ namespace DotNetGraph.Node
             get => GetAttribute<DotNodeHeightAttribute>();
             set => SetAttribute(value);
         }
+
+        public DotNodeRankAttribute Rank
+        {
+            get => GetAttribute<DotNodeRankAttribute>();
+            set => SetAttribute(value);
+        }
         
         public DotNode(string identifier = null, DotColorAttribute color = null)
         {
