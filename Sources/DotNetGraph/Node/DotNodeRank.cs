@@ -6,6 +6,7 @@ namespace DotNetGraph.Node
 {
 	public enum DotNodeRank
 	{
+		Source = -2,
 		Min = -1,
 		One = 1,
 		Two = 2, 

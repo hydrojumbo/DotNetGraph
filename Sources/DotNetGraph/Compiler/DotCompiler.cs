@@ -110,6 +110,7 @@ namespace DotNetGraph.Compiler
                 {
                     case DotNodeRank.Max:
                     case DotNodeRank.Min:
+                    case DotNodeRank.Source:
                         builder.Append($"{{ rank={rank.Key.ToString().ToLower()}; {string.Join("; ", rank.Select(r => r.Identifier))} }}");
                         break;
 
