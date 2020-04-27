@@ -5,6 +5,7 @@ namespace DotNetGraph.Edge
         Solid,
         Dashed,
         Dotted,
-        Bold
+        Bold,
+        Invis
     }
 }

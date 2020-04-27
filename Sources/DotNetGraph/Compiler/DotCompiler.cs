@@ -210,6 +210,10 @@ namespace DotNetGraph.Compiler
                 {
                     attributeValues.Add($"style={edgeStyleAttribute.Style.ToString().ToLowerInvariant()}");
                 }
+                else if (attribute is DotEdgeLHeadAttribute edgeLHeadAttribute)
+                {
+                    attributeValues.Add($"lhead={edgeLHeadAttribute.LHead}");
+                }
                 else if (attribute is DotFontColorAttribute fontColorAttribute)
                 {
                     attributeValues.Add($"fontcolor=\"{fontColorAttribute.ToHex()}\"");

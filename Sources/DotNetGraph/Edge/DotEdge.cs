@@ -44,6 +44,12 @@ namespace DotNetGraph.Edge
             get => GetAttribute<DotEdgeArrowTailAttribute>();
             set => SetAttribute(value);
         }
+
+        public DotEdgeLHeadAttribute LHead
+        {
+            get => GetAttribute<DotEdgeLHeadAttribute>();
+            set => SetAttribute(value);
+        }
         
         public DotEdge()
         {
